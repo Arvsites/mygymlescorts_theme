@@ -199,6 +199,56 @@ add_shortcode('acf_schedule', function($atts){
   
 
 
+add_action('wp_enqueue_scripts', function () {
+  wp_enqueue_script(
+    'trial-modal',
+    get_template_directory_uri() . '/assets/js/trial-modal.js',
+    [],
+    '1.0.0',
+    true
+  );
+  // Тексты и параметры для JS (Polylang support)
+  $ok  = function_exists('pll__') ? pll__('Спасибо! Мы свяжемся с вами в ближайшее время.') : 'Спасибо! Мы свяжемся с вами в ближайшее время.';
+  $err = function_exists('pll__') ? pll__('Ошибка отправки. Попробуйте позже.') : 'Ошибка отправки. Попробуйте позже.';
+  wp_localize_script('trial-modal', 'MyGymTrial', [
+    'ajax_url' => admin_url('admin-ajax.php'),
+    'nonce'    => wp_create_nonce('mygym_trial_nonce'),
+    'okText'   => $ok,
+    'errText'  => $err,
+  ]);
+});
+
+add_action('wp_ajax_mygym_send_trial',     'mygym_send_trial');
+add_action('wp_ajax_nopriv_mygym_send_trial', 'mygym_send_trial');
+function mygym_send_trial() {
+  // Проверка nonce
+  if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mygym_trial_nonce')) {
+    wp_send_json_error(['message' => 'bad_nonce'], 400);
+  }
+  // Простейший honeypot антиспам
+  if (!empty($_POST['website'])) {
+    wp_send_json_error(['message' => 'spam'], 400);
+  }
+  // Данные
+  $name    = sanitize_text_field($_POST['name'] ?? '');
+  $phone   = sanitize_text_field($_POST['phone'] ?? '');
+  $email   = sanitize_email($_POST['email'] ?? '');
+  $message = sanitize_textarea_field($_POST['message'] ?? '');
+  if ($name === '' || $phone === '' || !is_email($email)) {
+    wp_send_json_error(['message' => 'validation'], 400);
+  }
+  // Куда отправлять
+  $to = get_option('alexejvaleev@mail.ru'); // можно заменить на нужный email
+  $subject = 'Новая заявка с сайта: ' . wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
+  $body = "Имя: {$name}\nТелефон: {$phone}\nEmail: {$email}\nСообщение: {$message}\nСтраница: " . (wp_get_referer() ?: home_url()) . "\n";
+  $headers = [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $name . ' <' . $email . '>', ];
+  $sent = wp_mail($to, $subject, $body, $headers);
+  if ($sent) {
+    wp_send_json_success(['message' => 'ok']);
+  } else {
+    wp_send_json_error(['message' => 'mail_failed'], 500);
+  }
+}
 
 ?>
 

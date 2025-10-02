@@ -77,5 +77,35 @@
 </footer>
 
 <?php wp_footer(); ?>
+
+<!-- Модальное окно с формой -->
+<?php $trial_nonce = wp_create_nonce('mygym_trial_nonce'); ?>
+<div id="trial-modal" class="fixed inset-0 z-[999] hidden flex items-center justify-center" aria-hidden="true">
+  <!-- Затемнение фона -->
+  <div class="absolute inset-0 bg-black/60 js-close-trial" data-close="trial-modal"></div>
+  <!-- Модальное окно -->
+  <div role="dialog" aria-modal="true" aria-labelledby="trial-title" class="relative mx-auto max-w-md w-[92%] bg-white rounded-2xl shadow-xl flex flex-col">
+    <button type="button" class="absolute right-3 top-3 text-gray-500 hover:text-black js-close-trial" data-close="trial-modal" aria-label="Закрыть">×</button>
+    <h3 id="trial-title" class="px-6 pt-6 pb-3 text-lg font-bold">
+      <?= function_exists('pll__') ? pll__('Записаться на пробное занятие') : 'Записаться на пробное занятие'; ?>
+    </h3>
+    <form id="trial-form" class="px-6 pb-6 space-y-3">
+      <input type="hidden" name="action" value="mygym_send_trial">
+      <input type="hidden" name="nonce"  value="<?= esc_attr($trial_nonce); ?>">
+      <!-- honeypot антиспам -->
+      <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off"/>
+      <input class="w-full rounded-full border border-[#C9D4F3] px-4 py-2" type="text" name="name" placeholder="<?= esc_attr(function_exists('pll__')? pll__('Имя и фамилия*') : 'Имя и фамилия*'); ?>" required>
+      <input class="w-full rounded-full border border-[#C9D4F3] px-4 py-2" type="tel" name="phone" placeholder="<?= esc_attr(function_exists('pll__')? pll__('Телефон*') : 'Телефон*'); ?>" required>
+      <input class="w-full rounded-full border border-[#C9D4F3] px-4 py-2" type="email" name="email" placeholder="Email*" required>
+      <textarea class="w-full rounded-2xl border border-[#C9D4F3] px-4 py-2" name="message" rows="3" placeholder="<?= esc_attr(function_exists('pll__')? pll__('Сообщение') : 'Сообщение'); ?>"></textarea>
+      <p class="text-xs text-gray-500">*<?= function_exists('pll__') ? pll__('Поля обязательные для заполнения') : 'Поля обязательные для заполнения'; ?></p>
+      <button type="submit" class="w-full mt-1 rounded-full bg-[#39CB67] text-white font-medium py-2">
+        <?= function_exists('pll__') ? pll__('Отправить') : 'Отправить'; ?>
+      </button>
+      <div id="trial-result" class="text-sm mt-3 hidden"></div>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>

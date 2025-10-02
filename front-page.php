@@ -295,5 +295,9 @@ get_header();
   </div>
 </section>
 
+<a href="#" class="inline-flex items-center justify-center rounded-full bg-[#39CB67] px-6 py-3 text-black font-medium js-open-trial" data-open="trial-modal">
+  Записаться
+</a>
+
 
 <?php get_footer(); ?>
