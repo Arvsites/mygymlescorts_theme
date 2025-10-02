@@ -1,0 +1,171 @@
+/*
+ Theme Name: MyGym Les Corts
+ Author: Your Name
+ Description: Custom theme for MyGym Les Corts
+ Version: 1.0
+*/
+
+html, body { overflow-x: hidden; }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+@keyframes slideDown {
+  0% { transform: translateY(-100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.menu-open {
+  animation: slideDown 0.3s ease forwards;
+}
+
+body.overflow-hidden {
+    overflow: hidden;
+  }
+button.burger {
+  width: 24px;
+  height: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+  .burger-line {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+  
+  .burger-active .burger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 5px);
+  }
+  
+  .burger-active .burger-line:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .burger-active .burger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -5px);
+  }
+  
+  #menu-wrap {
+    height: 100vh;              /* ограничение по высоте */
+    overflow-y: auto;           /* вертикальный скролл */
+    -webkit-overflow-scrolling: touch; /* плавный скролл на iOS */
+    scroll-behavior: smooth;
+  }
+  
+  #menu-wrap::-webkit-scrollbar {
+    width: 6px;
+  }
+  #menu-wrap::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+  }
+  
+.program-desc ul { list-style: disc; padding-left: 0.8rem; margin: 0; }
+.program-desc li { margin: 0.25rem 0; }
+.program-desc ul li::marker { color: #E32929; } /* красные точки */
+
+/* shrink header on scroll */
+#header-row {
+  height: 100px;               /* исходная высота */
+  margin-top: 2px;
+  transition: height .2s ease; 
+  overflow: hidden;            /* чтобы контент не выползал при сжатии */
+}
+#site-header.is-shrink #header-row {
+  height: 64px !important;     /* сжатая высота; дай 70/80 если хочешь мягче */
+}
+
+/* Логотип плавно сжимается */
+.logo-img {
+  height: 120px;
+  transition: height .2s ease;
+}
+
+#site-header.is-shrink .logo-img {
+  height: 54px; /* подогнано под сжатый header */
+}
+
+.menu-link {
+  transition: color .2s ease;
+}
+.menu-link:hover {
+  color: #FEED00;
+}
+
+:root { --container-w: 1440px; } /* совпадает с твоим max-w-[1440px] */
+
+@media (min-width:1060px){ /* твой lgm брейкпоинт */
+  .bleed-right{
+    margin-right: calc((100vw - var(--container-w)) / 2 * -1);
+  }
+  .bleed-left{
+    margin-left: calc((100vw - var(--container-w)) / 2 * -1);
+  }
+
+}
+
+@media (max-width: 1150px){
+  .acf-sched tbody th.time{
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background: #fff;
+
+    /* срезаем левую сторону */
+    border-radius: 0 12px 12px 0;         /* было 12px со всех сторон */
+    background-clip: padding-box;         /* чтобы фон не лез под радиус */
+
+    /* маска стыка с соседней колонкой (если есть border-spacing) */
+    box-shadow: 8px 0 0 #fff;             /* подгони 8 под свой gap (обычно = border-spacing/2..gap) */
+  }
+}
+
+/* обёртка остаётся скроллимой по X */
+.acf-sched{
+  display:block;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x;
+  overscroll-behavior-x:contain;
+  scrollbar-gutter: stable;
+  cursor: grab;         /* для drag-to-scroll */
+}
+
+/* ВАЖНО: таблица должна иметь ширину по содержимому, а не 100% */
+.acf-sched table{
+  width: auto;          /* было: 100% */
+  display: inline-block;/* чтобы контейнер мог скроллить по X */
+  min-width: 1100px;    /* подгони, чтобы на мобиле точно появился скролл */
+  border-collapse:separate;
+  border-spacing:12px;
+}
+
+.acf-sched thead th{ position:sticky; top:0; background:#fff; z-index:1; }
+.acf-sched .time{ background:#fff; font-weight:600; white-space:nowrap; }
+.acf-sched th, .acf-sched td{
+  padding:10px; border-radius:12px; text-align:center; font-weight:700;
+  color:#154092; white-space:nowrap;
+}
+.acf-sched .empty{ background:#FFF8BC; color:transparent; }
+
+/* нижняя «дорожка» прокрутки */
+.acf-sched-xbar{
+  height: 16px;
+  margin-top: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  background: transparent;
+  border-radius: 8px;
+}
+.acf-sched-xbar .spacer{ height:1px; }
+
+
+
+
